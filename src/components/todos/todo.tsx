@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 type Todo = {
   title: string;
   readonly id: number;
+  completed_flg: boolean;
+  delete_flg: boolean
 };
 
 // Todoコンポーネントの定義
@@ -14,16 +16,16 @@ const Todos: React.FC = () => {
   const handleEdit = (id: number, value: string) => {
     console.log('handleEdit called:', id, value);
     setTodos((todos) => {
-       /**
-     * 引数として渡された todo の id が一致する
-     * 更新前の todos ステート内の
-     * value(プロパティ)を引数 value (= e.target.value) に書き換える
-     */
+      /**
+    * 引数として渡された todo の id が一致する
+    * 更新前の todos ステート内の
+    * value(プロパティ)を引数 value (= e.target.value) に書き換える
+    */
       const newTodos = todos.map((todo) => {
         if (todo.id === id) {
           console.log('Updating todo:', todo);
           // todo.title = value;
-          return {...todo, title: value};
+          return { ...todo, title: value };
         }
         return todo;
       });
@@ -40,8 +42,8 @@ const Todos: React.FC = () => {
   };
 
 
-   // todos ステートを更新する関数
-   const handleSubmit = () => {
+  // todos ステートを更新する関数
+  const handleSubmit = () => {
     // 何も入力されていなかったらリターン
     if (!text) return;
 
@@ -49,7 +51,9 @@ const Todos: React.FC = () => {
     // 新しい Todo を作成
     const newTodo: Todo = {
       title: text, // text ステートの値を content プロパティへ
-      id: nextId
+      id: nextId,
+      completed_flg: false,
+      delete_flg: false
     };
 
 
@@ -65,6 +69,31 @@ const Todos: React.FC = () => {
     setText('');
   };
 
+  const handleCheck = (id: number, completed_flg: boolean) => {
+    setTodos((todos) => {
+      const newTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, completed_flg };
+        }
+        return todo;
+      });
+      return newTodos;
+    });
+  }
+
+  const handleRemove = (id: number, delete_flg: boolean) => {
+    setTodos((todos) => {
+      const newTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, delete_flg };
+        }
+        return todo;
+      });
+      return newTodos;
+    });
+  };
+
+
   return (
     <div>
       <form
@@ -73,7 +102,7 @@ const Todos: React.FC = () => {
           handleSubmit(); // handleSubmit 関数を呼び出す
         }}
       >
-          <input
+        <input
           type="text"
           value={text} // フォームの入力値をステートにバインド
           onChange={(e) => setText(e.target.value)} // 入力値が変わった時にステートを更新
@@ -85,10 +114,17 @@ const Todos: React.FC = () => {
           return (
             <li key={todo.id}>
               <input
+                type="checkbox"
+                checked={todo.completed_flg}
+                onChange={() =>handleCheck(todo.id, !todo.completed_flg)}
+              />
+              <input
                 type="text"
                 value={todo.title}
+                disabled={todo.completed_flg}
                 onChange={(e) => handleEdit(todo.id, e.target.value)}
               />
+              <button onClick={() => handleRemove(todo.id, !todo.delete_flg)}>{todo.delete_flg ? '復元' : '削除'}</button>
             </li>
           );
         })}

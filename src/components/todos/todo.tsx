@@ -123,6 +123,11 @@ const Todos: React.FC = () => {
     }
   };
 
+  // 物理的に削除する関数 delete_flgがfalseのものだけを返す
+  const handleEmpty = () => {
+    setTodos((todos) => todos.filter((todo) => !todo.delete_flg)); // todoは任意の変数名。todosという現在のタスク一覧を取得し、その1つずつの要素から削除フラグがfalseのものを返す。trueのものは返さない＝表示しない。
+  };
+
   return (
     <div className="todo-container">
       <select
@@ -136,7 +141,7 @@ const Todos: React.FC = () => {
       </select>
       {/* ﾌｨﾙﾀｰが`delete`のときは「ごみ箱を空にする」ボタンを表示 */}
       {filter === 'delete' ? (
-        <button onClick={() => console.log('remove all')}>
+        <button onClick={handleEmpty}>
           ごみ箱を空にする
         </button>
       ) : (

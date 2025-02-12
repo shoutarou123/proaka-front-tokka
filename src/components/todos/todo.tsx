@@ -22,32 +22,22 @@ const Todos: React.FC = () => {
   const [nextId, setNextId] = useState(1); // 次のTodoのIDを保持するstate
   const [filter, setFilter] = useState<Filter>('all');
 
-  const handleEdit = (id: number, value: string) => {
-    console.log('handleEdit called:', id, value);
-    setTodos((todos) => {
-      /**
-    * 引数として渡された todo の id が一致する
-    * 更新前の todos ステート内の
-    * value(プロパティ)を引数 value (= e.target.value) に書き換える
-    */
-      const newTodos = todos.map((todo) => {
-        if (todo.id === id) {
-          console.log('Updating todo:', todo);
-          // todo.title = value;
-          return { ...todo, title: value };
-        }
-        return todo;
-      });
+  const updateTodo = <T extends keyof Todo>(todos: Todo[], id: number, key: T, value: Todo[T]): Todo[] => {
+  // T extends AでTはAに含まれているものでなければならない。keyof TodoでTodoのｷｰ全て取得。なのでTはTodoのｷｰにあるものでなければならない。
+  // 引数の意味は現在のﾀｽｸ一覧を取得し、更新したいidを取得、そのidのｷｰを取得し、そのｷｰに対する値を取得する。という意味
+  // : Todo[]で、戻り値はTodoの配列であることを指定している。
 
-      // todos ステートが書き換えられていないかチェック
-      console.log('=== Original todos ===');
-      todos.map((todo) => {
-        console.log(`id: ${todo.id}, title: ${todo.title}`);
-      });
-
-      // todosステートを更新
-      return newTodos;
+    return todos.map((todo) => { //todos一覧をtodoという任意の変数名で取得
+      if (todo.id === id) { // 一覧のidと更新対象のid(引数のid)が同じものであれば
+        return { ...todo,[key]: value }; // todoの全ﾌﾟﾛﾊﾟﾃｨ(ｷｰと値のｾｯﾄ)を取得し、それのkeyに対する値を更新する。
+      }
+      return todo; // idが一致しない時はそのままtodo一覧を返す
     });
+  };
+  
+
+  const handleEdit = (id: number, value: string) => {
+    setTodos((todos) => updateTodo(todos, id, 'title', value)); // titleというｷｰとなる文字列を渡している。titleと書くと変数と認識されてしまう
   };
 
 
@@ -79,27 +69,11 @@ const Todos: React.FC = () => {
   };
 
   const handleCheck = (id: number, completed_flg: boolean) => {
-    setTodos((todos) => {
-      const newTodos = todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, completed_flg };
-        }
-        return todo;
-      });
-      return newTodos;
-    });
-  }
+    setTodos((todos) => updateTodo(todos, id, 'completed_flg', completed_flg)); // 前述の引数にcompleted_flgを受け取っているので、こちらもcompleted_flgと記述することでtrueかfalseが入ってくる
+  };
 
   const handleRemove = (id: number, delete_flg: boolean) => {
-    setTodos((todos) => {
-      const newTodos = todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, delete_flg };
-        }
-        return todo;
-      });
-      return newTodos;
-    });
+    setTodos((todos) => updateTodo(todos, id, 'delete_flg', delete_flg));
   };
 
   const handleFilterChange = (filter: Filter) => { // onChangeｲﾍﾞﾝﾄが発火するとFilter型の変数を受け取り、ｽﾃｰﾄを更新

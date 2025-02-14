@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import localforage from 'localforage';
+import { useNavigate } from 'react-router-dom';
 
 type Todo = {
   title: string;
@@ -18,6 +19,7 @@ type Filter = 'all' | 'completed' | 'unchecked' | 'delete';
 
 // Todoコンポーネントの定義
 const Todos: React.FC = () => {
+  const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]>([]); // Todoの配列を保持するstate
   const [text, setText] = useState(''); // テキスト入力用
   const [nextId, setNextId] = useState(1); // 次のTodoのIDを保持するstate
@@ -139,6 +141,11 @@ const Todos: React.FC = () => {
 
   return (
     <div className="todo-container">
+      <button
+        className="back-button"
+        onClick={() => navigate('/')}
+        title="Topページに戻る" // ツールチップ表示
+      >← 戻る</button>
       <select
         defaultValue="all"
         onChange={(e) => handleFilterChange(e.target.value as Filter)} // e.target.valueは本来stringになるので、Filterの4つの文字だけ使うようにルールを設定している

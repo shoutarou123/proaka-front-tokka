@@ -103,6 +103,10 @@ const Todos: React.FC = () => {
   //   setTodos((todos) => updateTodo(todos, id, 'title', value)); // titleというｷｰとなる文字列を渡している。titleと書くと変数と認識されてしまう
   // };
 
+    const handleEdit = (id: number) => {
+      alert('編集画面です');
+    };
+
 
 
   // const handleCheck = (id: number, completed_flg: boolean) => {
@@ -196,6 +200,7 @@ const Todos: React.FC = () => {
                 disabled={todo.completed_flg || todo.delete_flg}
                 onChange={(e) => handleTodo(todo.id, 'title', e.target.value)}
               />
+              <button className="edit-button" onClick={() => handleEdit(todo.id)}>編集</button>
               <button onClick={() => handleTodo(todo.id, 'delete_flg', !todo.delete_flg)}>
                 {todo.delete_flg ? '復元' : '削除'}
               </button>

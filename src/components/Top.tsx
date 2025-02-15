@@ -1,3 +1,4 @@
+import { Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -14,9 +15,9 @@ const Top = () => {
   return (
     <div>
       <h1>トップページ</h1>
-      <button onClick={goToTodos}>
+      <Button onClick={goToTodos}>
         Todoリストへ
-      </button>
+      </Button>
     </div>
   );
 };

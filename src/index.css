@@ -39,7 +39,7 @@ select, input[type='text'], button[type='submit'] {
 
 
 button[type='submit'] {
-  background-color: #007BFF;
+  background-color: #FFAE01;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -52,15 +52,6 @@ button[type='submit'] {
 
 button[type='submit']:hover {
   background-color: #0056b3;
-}
-
-/* 編集ボタン */
-.edit-button {
-  background-color: #4caf4c;
-}
-
-.edit-button:hover {
-  background-color: #45a049;
 }
 
 
@@ -103,10 +94,29 @@ li input[type='checkbox'] {
   transform: scale(1.5); /* チェックボックスを大きく */
 }
 
+/* ボタンを横並びにする */
+.button-group {
+  display: flex;
+  gap: 0.5em; /* ボタンの間隔 */
+}
 
+/* 編集ボタン */
+.accordion__button {
+  padding: 0.3em 0.6em; 
+  border-radius: 5px;
+  background-color: #4DB7AC;
+  color: #fff;
+  cursor: pointer;
+  width: auto;
+  border: none;
+  white-space: nowrap; /* 改行を防ぐ */
+}
+
+
+/* 削除ボタン */
 li button {
   padding: 0.3em 0.6em; 
-  background-color: #dc3545;
+  background-color: #FF8A80;
   color: #fff;
   border: none;
   border-radius: 5px;

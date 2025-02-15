@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import localforage from 'localforage';
 import { useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionItemHeading,
+  AccordionItemButton,
+  AccordionItemPanel,
+} from 'react-accessible-accordion';
 
 type Todo = {
   title: string;
@@ -103,9 +110,9 @@ const Todos: React.FC = () => {
   //   setTodos((todos) => updateTodo(todos, id, 'title', value)); // titleというｷｰとなる文字列を渡している。titleと書くと変数と認識されてしまう
   // };
 
-    const handleEdit = (id: number) => {
-      alert('編集画面です');
-    };
+  const handleEdit = (id: number) => {
+    alert('編集画面です');
+  };
 
 
 
@@ -200,10 +207,21 @@ const Todos: React.FC = () => {
                 disabled={todo.completed_flg || todo.delete_flg}
                 onChange={(e) => handleTodo(todo.id, 'title', e.target.value)}
               />
-              <button className="edit-button" onClick={() => handleEdit(todo.id)}>編集</button>
-              <button onClick={() => handleTodo(todo.id, 'delete_flg', !todo.delete_flg)}>
-                {todo.delete_flg ? '復元' : '削除'}
-              </button>
+              <div className="button-group">
+                <Accordion  allowZeroExpanded> {/* allowZeroExpandedがないと開閉できない */}
+                  <AccordionItem>
+                    <AccordionItemHeading>
+                      <AccordionItemButton>編集</AccordionItemButton>
+                    </AccordionItemHeading>
+                    <AccordionItemPanel>内容</AccordionItemPanel>
+                  </AccordionItem>
+                </Accordion>
+
+                <button onClick={() => handleTodo(todo.id, 'delete_flg', !todo.delete_flg)}>
+                  {todo.delete_flg ? '復元' : '削除'}
+                </button>
+              </div>
+
             </li>
           );
         })}

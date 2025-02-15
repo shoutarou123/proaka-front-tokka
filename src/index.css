@@ -23,8 +23,10 @@ body, html {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%; /* 幅を100%に設定 */
   max-width: 1200px; /* 最大幅を1200pxに設定 */
-  margin: 1em; /* 中央寄せ */
+  margin: 1em auto; /* 中央寄せ */
   box-sizing: border-box; /* パディングとボーダーを含む */
+  min-height: 600px; /* コンテンツが増えたときのために最低限の高さを確保 */
+  overflow: auto; /* 高さを超えた場合にスクロール可能にする */
 }
 
 
@@ -39,7 +41,7 @@ select, input[type='text'], button[type='submit'] {
 
 
 button[type='submit'] {
-  background-color: #007BFF;
+  background-color: #FFAE01;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -63,7 +65,7 @@ ul {
 
 
 li {
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: space-between;
   background: #f9f9f9;/* 背景色を白に設定 */
@@ -94,19 +96,40 @@ li input[type='checkbox'] {
   transform: scale(1.5); /* チェックボックスを大きく */
 }
 
+/* ボタンを横並びにする */
+.button-group-container {
+  display: flex;
+  justify-content: start;
+  gap: 0.5em; /* ボタンの間隔 */
+  margin-top: 0.5em;
+}
 
-li button {
+/* 編集ボタン */
+.chakra-button.edit-button {
   padding: 0.3em 0.6em; 
-  background-color: #dc3545;
+  border-radius: 5px;
+  background-color: #4DB7AC;
+  color: #fff;
+  cursor: pointer;
+  width: 100px;
+  border: none;
+  white-space: nowrap; /* 改行を防ぐ */
+}
+
+
+/* 削除ボタン */
+.chakra-button.delete-button {
+  padding: 0.3em 0.6em; 
+  background-color: #FF8A80;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   width: 100px;
+  min-width: 100px;
 }
 
-
-li button:hover {
+.delete-button:hover {
   background-color: #c82333;
 }
 
@@ -114,4 +137,24 @@ li button:hover {
 button[disabled] {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+
+/* アコーディオン全体のスタイル */
+.accordion-container {
+  width: 100%;
+  margin-top: 1em;
+}
+
+/* アコーディオンの表示調整 */
+.accordion-panel {
+  width: 100%; /* 横幅いっぱいにする */
+  height: auto !important;
+  min-height: 250px !important; /* ← ここを変更 */
+  max-height: 500px; /* 高さが大きくなりすぎないようにする */
+  flex-grow: 1; /* 親の高さに合わせる */
+  padding: 1em; /* 余白を追加 */
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

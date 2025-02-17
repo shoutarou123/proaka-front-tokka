@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import localforage from 'localforage';
 import { useNavigate } from 'react-router-dom';
+import { BackCalendar } from '../BackCalendar';
+
 
 type Todo = {
   title: string;
@@ -26,6 +28,7 @@ const Todos: React.FC = () => {
   const [filter, setFilter] = useState<Filter>('all');
 
   const [activeTodoId, setActiveTodoId] = useState<number | null>(null);
+
 
   // todos ステートを更新する関数
   const handleSubmit = () => {
@@ -147,11 +150,11 @@ const Todos: React.FC = () => {
 
   return (
     <div className="todo-container">
-      <button
-        className="back-button"
-        onClick={() => navigate('/')}
-        title="Topページに戻る" // ツールチップ表示
-      >← 戻る</button>
+      < div className="calendar-navigation">
+        <button className='previos-day'>前の日</button>
+        <BackCalendar />
+        <button className='next-day'>次の日</button>
+      </div>
       <select
         defaultValue="all"
         onChange={(e) => handleFilterChange(e.target.value as Filter)} // e.target.valueは本来stringになるので、Filterの4つの文字だけ使うようにルールを設定している

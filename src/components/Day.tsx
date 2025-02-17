@@ -3,8 +3,10 @@ export const Day = () => {
   const year = today.getUTCFullYear();
   const month = today.getUTCMonth() + 1;
   const day = today.getUTCDate();
-  
+
   return (
-    `${year}年${month}月${day}日`
+    <h1>
+      {`${year}年${month}月${day}日`}
+    </h1>
   )
 }

@@ -39,8 +39,17 @@ select, input[type='text'], button[type='submit'] {
   border-radius: 5px;
 }
 
+.calendar-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em;
+}
 
-.back-button {
+.previos-day,
+.back-button,
+.next-day {
   background-color: #FFAE01;
   color: #fff;
   border: none;
@@ -48,6 +57,14 @@ select, input[type='text'], button[type='submit'] {
   font-size: 1.2em;
   padding: 0.5em 1em;
   border-radius: 5px;
+  width: auto;
+  text-align: center;
+}
+
+.previos-day:hover,
+.back-button:hover,
+.next-day:hover {
+  background-color: #ff9500;
 }
 
 button[type='submit'] {

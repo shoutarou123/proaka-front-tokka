@@ -8,21 +8,11 @@ import { Day } from './components/Day';
 
 
 function App() {
-  const [showCalendar, setShowCalendar] = useState(false);
-
+  
   return (
 
     <BrowserRouter>
       <Day /><br />
-      {/* カレンダー表示・非表示を切り替えるボタン */}
-      <button onClick={() => setShowCalendar(!showCalendar)}>カレンダーに戻る</button>
-
-      {/* カレンダーを表示 */}
-      {showCalendar && (
-        <div>
-          <FullCalendar plugins={[dayGripPlugin]} />
-        </div>
-      )}
 
       <Routes>
         <Route path="/" element={<Top />} />

@@ -40,6 +40,16 @@ select, input[type='text'], button[type='submit'] {
 }
 
 
+.back-button {
+  background-color: #FFAE01;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+}
+
 button[type='submit'] {
   background-color: #FFAE01;
   color: #fff;
@@ -64,10 +74,10 @@ ul {
 }
 
 
-li {
-  display: block;
-  align-items: center;
-  justify-content: space-between;
+.task-item {
+  display: flex;
+  flex-direction: column; /* 👈 タスクと編集フォームを縦に並べる */
+  align-items: flex-start;
   background: #f9f9f9;/* 背景色を白に設定 */
   padding: 1em; /* パディングを大きく */
   margin: 1em 0; /* マージンを大きく */
@@ -77,6 +87,11 @@ li {
   box-sizing: border-box; /* パディングとボーダーを含む */
 }
 
+.task-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
 li input[type='text'] {
   flex-grow: 1;
@@ -105,20 +120,22 @@ li input[type='checkbox'] {
 }
 
 /* 編集ボタン */
-.chakra-button.edit-button {
+.edit-button {
+  display: inline-block;
+  flex-shrink: 0;
   padding: 0.3em 0.6em; 
   border-radius: 5px;
   background-color: #4DB7AC;
   color: #fff;
   cursor: pointer;
-  width: 100px;
+  width: auto;
   border: none;
   white-space: nowrap; /* 改行を防ぐ */
 }
 
 
 /* 削除ボタン */
-.chakra-button.delete-button {
+.delete-button {
   padding: 0.3em 0.6em; 
   background-color: #FF8A80;
   color: #fff;
@@ -140,18 +157,12 @@ button[disabled] {
 }
 
 
-/* アコーディオン全体のスタイル */
-.accordion-container {
-  width: 100%;
-  margin-top: 1em;
-}
-
 /* アコーディオンの表示調整 */
 .accordion-panel {
   width: 100%; /* 横幅いっぱいにする */
   height: auto !important;
-  min-height: 250px !important; /* ← ここを変更 */
-  max-height: 500px; /* 高さが大きくなりすぎないようにする */
+  min-height: 50px !important; /* ← ここを変更 */
+  max-height: 300px; /* 高さが大きくなりすぎないようにする */
   flex-grow: 1; /* 親の高さに合わせる */
   padding: 1em; /* 余白を追加 */
   background: #fff;

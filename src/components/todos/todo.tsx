@@ -151,9 +151,9 @@ const Todos: React.FC = () => {
   return (
     <div className="todo-container">
       < div className="calendar-navigation">
-        <button className='previos-day'>前の日</button>
+        {/* <button className='previos-day' onClick={previosDay}>前の日</button> */}
         <BackCalendar />
-        <button className='next-day'>次の日</button>
+        {/* <button className='next-day'>次の日</button> */}
       </div>
       <select
         defaultValue="all"

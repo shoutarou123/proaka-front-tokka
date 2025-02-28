@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import localforage from 'localforage';
+import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from '@chakra-ui/react'
-import { Button, ButtonGroup } from '@chakra-ui/react'
-import { Input } from '@chakra-ui/react'
-import { Textarea } from '@chakra-ui/react'
+
+import localforage from 'localforage';
+import { useDay } from '../DayContext';
+
 
 type Todo = {
   title: string;
   readonly id: number;
   completed_flg: boolean;
-  delete_flg: boolean
+  delete_flg: boolean,
+  startDate: string;
 };
 
 type Filter = 'all' | 'completed' | 'unchecked' | 'delete';
@@ -29,12 +24,40 @@ type Filter = 'all' | 'completed' | 'unchecked' | 'delete';
 
 // Todoコンポーネントの定義
 const Todos: React.FC = () => {
+  const { date } = useDay();
   const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]>([]); // Todoの配列を保持するstate
   const [text, setText] = useState(''); // テキスト入力用
   const [nextId, setNextId] = useState(1); // 次のTodoのIDを保持するstate
   const [filter, setFilter] = useState<Filter>('all');
-  const [activeTodo, setActiveTodo] = useState<number | null>(null)
+
+  const [activeTodoId, setActiveTodoId] = useState<number | null>(null);
+
+  const options: { value: string; label: string }[] = [
+    { value: '0%', label: '0%' },
+    { value: '10%', label: '10%' },
+    { value: '20%', label: '20%' },
+    { value: '30%', label: '30%' },
+    { value: '40%', label: '40%' },
+    { value: '50%', label: '50%' },
+    { value: '60%', label: '60%' },
+    { value: '70%', label: '70%' },
+    { value: '80%', label: '80%' },
+    { value: '90%', label: '90%' },
+    { value: '100%', label: '100%' }
+  ]
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      background: '#ff9',
+    }),
+    menuList: (provided: any) => ({
+      ...provided,
+      maxHeigth: '200px',
+      overflow: 'auto',
+    }),
+  };
 
   // todos ステートを更新する関数
   const handleSubmit = () => {
@@ -46,7 +69,8 @@ const Todos: React.FC = () => {
       title: text, // text ステートの値を content プロパティへ
       id: nextId,
       completed_flg: false,
-      delete_flg: false
+      delete_flg: false,
+      startDate: date.toISOString().split("T")[0],
     };
 
     /**
@@ -153,14 +177,18 @@ const Todos: React.FC = () => {
     localforage.setItem('todo-20240622', todos); // todo-20240622というｷｰ名でtodosの配列に保存する
   }, [todos]);
 
+  useEffect(() => {
+    console.log("最新の Todo リスト: ", todos);
+  }, [todos]);
+
 
   return (
     <div className="todo-container">
-      <Button
-        className="back-button"
-        onClick={() => navigate('/')}
-        title="Topページに戻る" // ツールチップ表示
-      >← 戻る</Button>
+      < div className="calendar-navigation">
+        {/* <button className='previos-day' onClick={previosDay}>前の日</button> */}
+        {/* <BackCalendar /> */}
+        {/* <button className='next-day'>次の日</button> */}
+      </div>
       <select
         defaultValue="all"
         onChange={(e) => handleFilterChange(e.target.value as Filter)} // e.target.valueは本来stringになるので、Filterの4つの文字だけ使うようにルールを設定している
@@ -188,8 +216,9 @@ const Todos: React.FC = () => {
               type="text"
               value={text} // フォームの入力値をステートにバインド
               onChange={(e) => setText(e.target.value)} // 入力値が変わった時にステートを更新
+              placeholder='タスクを入力してください'
             />
-            <Button className="insert-btn" type="submit">追加</Button>{/* ボタンをクリックしてもonSubmitをトリガーしない */}
+            <button className="insert-btn" type="submit">追加</button>{/* ボタンをクリックしてもonSubmitをトリガーしない */}
           </form>
         )
       )}
@@ -198,39 +227,54 @@ const Todos: React.FC = () => {
         {getFilteredTodos().map((todo) => {
           return (
             <React.Fragment key={todo.id}>
-              <li>
-                <input
-                  type="checkbox"
-                  disabled={todo.delete_flg}
-                  checked={todo.completed_flg}
-                  // 呼び出し側で checked フラグを反転させる
-                  onChange={() => handleTodo(todo.id, 'completed_flg', !todo.completed_flg)}
-                />
-                <input
-                  type="text"
-                  value={todo.title}
-                  disabled={todo.completed_flg || todo.delete_flg}
-                  onChange={(e) => handleTodo(todo.id, 'title', e.target.value)}
-                />
-                <div className="button-group-container">
-                  <Button className='edit-button' onClick={() => setActiveTodo(activeTodo === todo.id ? null : todo.id)}>編集</Button>
+              <li className='task-item'>
+                <div className='task-content'>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                  <div>進捗率</div>
+                  <div>
+                    <Select
+                      styles={customStyles}
+                      options={options} />
+                  </div>
+                  </div>
+                 
+                  <p>開始日</p>
+                  <p>{todo.startDate}</p>
+                  <p>完了予定日</p>
 
-                  <Button className='delete-button' onClick={() => handleTodo(todo.id, 'delete_flg', !todo.delete_flg)}>
-                    {todo.delete_flg ? '復元' : '削除'}
-                  </Button>
+
+                  <input
+                    type="checkbox"
+                    disabled={todo.delete_flg}
+                    checked={todo.completed_flg}
+                    // 呼び出し側で checked フラグを反転させる
+                    onChange={() => handleTodo(todo.id, 'completed_flg', !todo.completed_flg)}
+                  />
+                  <input
+                    type="text"
+                    value={todo.title}
+                    disabled={todo.completed_flg || todo.delete_flg}
+                    onChange={(e) => handleTodo(todo.id, 'title', e.target.value)}
+                  />
+                  <div className="button-group-container">
+                    <button className='edit-button' onClick={() => setActiveTodoId(activeTodoId === todo.id ? null : todo.id)}>編集</button>
+                    <button className='delete-button' onClick={() => handleTodo(todo.id, 'delete_flg', !todo.delete_flg)}>
+                      {todo.delete_flg ? '復元' : '削除'}
+                    </button>
+                  </div>
                 </div>
+
               </li>
 
-              {
-                activeTodo === todo.id && (
-                  <Accordion allowToggle className="accordion-container"> {/* allowToggleで折りたためる */}
-                    <AccordionItem>
-                      <AccordionPanel className="accordion-panel">
-                        <label>タイトル</label>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
-                )}
+              {/* 編集ﾌｫｰﾑ表示 */}
+              {activeTodoId === todo.id && (
+                <li className="edit-form-container">
+                  <div className="edit-form">
+                    <input type="text" />
+                  </div>
+                </li>
+              )}
+
             </React.Fragment>
           );
         })}

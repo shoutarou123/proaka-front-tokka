@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import localforage from 'localforage';
+import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
-import { BackCalendar } from '../BackCalendar';
+
+import localforage from 'localforage';
+import { useDay } from '../DayContext';
 
 
 type Todo = {
   title: string;
   readonly id: number;
   completed_flg: boolean;
-  delete_flg: boolean
+  delete_flg: boolean,
+  startDate: string;
 };
 
 type Filter = 'all' | 'completed' | 'unchecked' | 'delete';
@@ -21,6 +24,7 @@ type Filter = 'all' | 'completed' | 'unchecked' | 'delete';
 
 // Todoコンポーネントの定義
 const Todos: React.FC = () => {
+  const { date } = useDay();
   const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]>([]); // Todoの配列を保持するstate
   const [text, setText] = useState(''); // テキスト入力用
@@ -29,6 +33,31 @@ const Todos: React.FC = () => {
 
   const [activeTodoId, setActiveTodoId] = useState<number | null>(null);
 
+  const options: { value: string; label: string }[] = [
+    { value: '0%', label: '0%' },
+    { value: '10%', label: '10%' },
+    { value: '20%', label: '20%' },
+    { value: '30%', label: '30%' },
+    { value: '40%', label: '40%' },
+    { value: '50%', label: '50%' },
+    { value: '60%', label: '60%' },
+    { value: '70%', label: '70%' },
+    { value: '80%', label: '80%' },
+    { value: '90%', label: '90%' },
+    { value: '100%', label: '100%' }
+  ]
+
+  const customStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      background: '#ff9',
+    }),
+    menuList: (provided: any) => ({
+      ...provided,
+      maxHeigth: '200px',
+      overflow: 'auto',
+    }),
+  };
 
   // todos ステートを更新する関数
   const handleSubmit = () => {
@@ -40,7 +69,8 @@ const Todos: React.FC = () => {
       title: text, // text ステートの値を content プロパティへ
       id: nextId,
       completed_flg: false,
-      delete_flg: false
+      delete_flg: false,
+      startDate: date.toISOString().split("T")[0],
     };
 
     /**
@@ -147,12 +177,16 @@ const Todos: React.FC = () => {
     localforage.setItem('todo-20240622', todos); // todo-20240622というｷｰ名でtodosの配列に保存する
   }, [todos]);
 
+  useEffect(() => {
+    console.log("最新の Todo リスト: ", todos);
+  }, [todos]);
+
 
   return (
     <div className="todo-container">
       < div className="calendar-navigation">
         {/* <button className='previos-day' onClick={previosDay}>前の日</button> */}
-        <BackCalendar />
+        {/* <BackCalendar /> */}
         {/* <button className='next-day'>次の日</button> */}
       </div>
       <select
@@ -182,6 +216,7 @@ const Todos: React.FC = () => {
               type="text"
               value={text} // フォームの入力値をステートにバインド
               onChange={(e) => setText(e.target.value)} // 入力値が変わった時にステートを更新
+              placeholder='タスクを入力してください'
             />
             <button className="insert-btn" type="submit">追加</button>{/* ボタンをクリックしてもonSubmitをトリガーしない */}
           </form>
@@ -194,6 +229,20 @@ const Todos: React.FC = () => {
             <React.Fragment key={todo.id}>
               <li className='task-item'>
                 <div className='task-content'>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                  <div>進捗率</div>
+                  <div>
+                    <Select
+                      styles={customStyles}
+                      options={options} />
+                  </div>
+                  </div>
+                 
+                  <p>開始日</p>
+                  <p>{todo.startDate}</p>
+                  <p>完了予定日</p>
+
+
                   <input
                     type="checkbox"
                     disabled={todo.delete_flg}

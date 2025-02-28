@@ -26,7 +26,7 @@ body, html {
   margin: 1em auto; /* 中央寄せ */
   box-sizing: border-box; /* パディングとボーダーを含む */
   min-height: 600px; /* コンテンツが増えたときのために最低限の高さを確保 */
-  overflow: auto; /* 高さを超えた場合にスクロール可能にする */
+  overflow: visible; /* これでドロップダウンがはみ出せるようにしている */
 }
 
 
@@ -47,9 +47,16 @@ select, input[type='text'], button[type='submit'] {
   margin-bottom: 1em;
 }
 
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
 .previos-day,
 .back-button,
 .next-day {
+  display: flex;
   background-color: #FFAE01;
   color: #fff;
   border: none;

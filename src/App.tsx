@@ -5,19 +5,22 @@ import FullCalendar from '@fullcalendar/react';
 import dayGripPlugin from '@fullcalendar/daygrid';
 import { useState } from 'react';
 import { Day } from './components/Day';
+import { DayProvider } from './components/DayContext';
 
 
 function App() {
-  
+
   return (
 
     <BrowserRouter>
-      <Day /><br />
+      <DayProvider>
+        <Day /><br />
 
-      <Routes>
-        <Route path="/" element={<Top />} />
-        <Route path="/todos" element={<Todos />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Top />} />
+          <Route path="/todos" element={<Todos />} />
+        </Routes>
+      </DayProvider>
     </BrowserRouter>
 
   );

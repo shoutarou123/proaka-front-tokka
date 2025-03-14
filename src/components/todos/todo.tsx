@@ -4,13 +4,16 @@ import { useNavigate } from 'react-router-dom';
 
 import localforage from 'localforage';
 import { useDay } from '../DayContext';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+
 
 
 type Todo = {
   title: string;
   readonly id: number;
   completed_flg: boolean;
-  delete_flg: boolean,
+  delete_flg: boolean;
   startDate: string;
 };
 
@@ -30,8 +33,10 @@ const Todos: React.FC = () => {
   const [text, setText] = useState(''); // テキスト入力用
   const [nextId, setNextId] = useState(1); // 次のTodoのIDを保持するstate
   const [filter, setFilter] = useState<Filter>('all');
+  const [startDate, setStartDate] = useState(new Date())
 
   const [activeTodoId, setActiveTodoId] = useState<number | null>(null);
+  const [progress, setProgress] = useState<string | null>(null);
 
   const options: { value: string; label: string }[] = [
     { value: '0%', label: '0%' },
@@ -46,6 +51,7 @@ const Todos: React.FC = () => {
     { value: '90%', label: '90%' },
     { value: '100%', label: '100%' }
   ]
+
 
   const customStyles = {
     control: (provided: any) => ({
@@ -163,6 +169,8 @@ const Todos: React.FC = () => {
     setTodos((todos) => todos.filter((todo) => !todo.delete_flg)); // todoは任意の変数名。todosという現在のタスク一覧を取得し、その1つずつの要素から削除フラグがfalseのものを返す。trueのものは返さない＝表示しない。
   };
 
+
+
   // useEffect フックを使ってコンポーネントのマウント時にデータを取得
   useEffect(() => {
     localforage.getItem('todo-20240622').then((values) => { // thenは非同期処理Promiseが成功したときに実行する。という意味。
@@ -234,13 +242,26 @@ const Todos: React.FC = () => {
                   <div>
                     <Select
                       styles={customStyles}
-                      options={options} />
+                      options={options} 
+                      onChange={(SelectedOption) => {
+                        if (SelectedOption) {
+                          setProgress(SelectedOption.value);
+                          if (SelectedOption.value === '100%') {
+                            handleTodo(todo.id, 'completed_flg', true);
+                          }
+                        } else {
+                          setProgress(null)
+                        }
+                      }}
+                      />
                   </div>
                   </div>
                  
                   <p>開始日</p>
-                  <p>{todo.startDate}</p>
+                  <DatePicker selected={startDate} onChange={(date) =>
+                    setStartDate(date!)} dateFormat="yyyy/MM/dd" />
                   <p>完了予定日</p>
+                  <DatePicker selected={startDate} onChange={(date) => setStartDate(date!)} dateFormat="yyyy/MM/dd" />
 
 
                   <input
@@ -254,6 +275,7 @@ const Todos: React.FC = () => {
                     type="text"
                     value={todo.title}
                     disabled={todo.completed_flg || todo.delete_flg}
+                    style={{ backgroundColor: todo.completed_flg? 'grey': 'white' }}
                     onChange={(e) => handleTodo(todo.id, 'title', e.target.value)}
                   />
                   <div className="button-group-container">
